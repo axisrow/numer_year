@@ -2,3 +2,4 @@ requests
 telebot
 urllib3
 python-dateutil
+peewee
