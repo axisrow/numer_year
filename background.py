@@ -1,15 +1,15 @@
-from flask import Flask, Response
-import os
+from flask import Flask
+from threading import Thread
 
 app = Flask('')
 
 @app.route('/')
 def home():
-    if os.path.exists('app.log'):
-        with open('app.log', 'r') as f:
-            return Response(f.read(), mimetype='text/plain')
-    else:
-        return "Log file not found", 404
+  return "I'm alive"
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+def run():
+  app.run(host='0.0.0.0', port=5050)
+
+def keep_alive():
+  t = Thread(target=run)
+  t.start()
