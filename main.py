@@ -1,10 +1,88 @@
-from datetime import datetime, timedelta
+import os
+from dotenv import load_dotenv
+import telebot
+from datetime import datetime, date, timedelta
+from dateutil.relativedelta import relativedelta
+from user_stat import UserStat, db
 
-def calculate_age(birth_date_str):
-    birth_date = datetime.strptime(birth_date_str, '%d.%m.%Y')
-    today = datetime.today()
-    age = today.year - birth_date.year - ((today.month, today.day) < (birth_date.month, birth_date.day))
-    return age
+load_dotenv()
+
+BOT_TOKEN = os.getenv('BOT_TOKEN')
+ADMIN_CHAT_ID = 169675602
+bot = telebot.TeleBot(BOT_TOKEN)
+
+def register_user(user_id, username, first_name, last_name, language_code, birth_date):
+    user, created = UserStat.get_or_create(
+        user_id=user_id,
+        defaults={
+            'username': username,
+            'first_name': first_name,
+            'last_name': last_name,
+            'language_code': language_code,
+            'date_of_birth': birth_date
+        })
+    
+    if not created:
+        user.date_of_birth = birth_date
+        user.save()
+
+def get_user(user_id):
+    try:
+        user = UserStat.get(UserStat.user_id == user_id)
+        return user
+    except UserStat.DoesNotExist:
+        return None
+
+def get_total_users():
+    return UserStat.select().count()
+
+@bot.message_handler(commands=['start'])
+def send_welcome(message):
+    user = get_user(message.chat.id)
+    if user:
+        bot.send_message(message.chat.id, f"Здравствуйте, {user.first_name} {user.last_name}, Вы родились: {user.date_of_birth}\nВведите год, который Вас интересует:")
+    else:
+        bot.send_message(message.chat.id, "Введите вашу дату рождения в формате ДД.ММ.ГГГГ:")
+
+@bot.message_handler(func=lambda message: True)
+def birth_date_handler(message):
+    chat_id = message.chat.id
+    text = message.text
+    
+    # Добавим здесь проверку на админский ID
+    if text == '/stat' and chat_id == ADMIN_CHAT_ID:
+        return send_stats(message)
+    
+    user = get_user(chat_id)
+    
+    if not user:
+        # Обработка даты рождения
+        date_parts = text.split('.')
+        if len(date_parts) != 3 or not all(part.isdigit() for part in date_parts):
+            bot.send_message(chat_id, "Некорректный формат даты. Пожалуйста, введите дату в формате ДД.ММ.ГГГГ.")
+            return
+        try:
+            birth_date = date(int(date_parts[2]), int(date_parts[1]), int(date_parts[0]))
+            register_user(
+                user_id=chat_id,
+                username=message.from_user.username,
+                first_name=message.from_user.first_name,
+                last_name=message.from_user.last_name,
+                language_code=message.from_user.language_code,
+                birth_date=birth_date
+            )
+            bot.send_message(chat_id, "Дата рождения успешно сохранена. Введите интересующий Вас год.")
+        except ValueError:
+            bot.send_message(chat_id, "Некорректный формат даты. Пожалуйста, введите дату в формате ДД.ММ.ГГГГ.")
+    else:
+        # Обработка интересующего года
+        if text.isdigit() and 1900 <= int(text) <= 2100:
+            year_of_interest = int(text)
+            birth_date_str = user.date_of_birth.strftime('%d.%m.%Y')
+            text_for_A, date_range = calculate_from_date(f"{birth_date_str.split('.')[0]}.{birth_date_str.split('.')[1]}.{year_of_interest}")
+            bot.send_message(chat_id, f"{text_for_A}\nДиапазон дат: {date_range}")
+        else:
+            bot.send_message(chat_id, "Некорректный ввод. Введите интересующий Вас год (от 1900 до 2100).")
 
 def calculate_from_date(date_str):
     day, month, year = map(int, date_str.split('.'))
@@ -34,17 +112,19 @@ def calculate_from_date(date_str):
     ]
     text_for_A = texts[A - 1]
     start_date = datetime.strptime(date_str, '%d.%m.%Y')
-    end_date = start_date + timedelta(days=364)
+
+    end_date = start_date + relativedelta(years=+1)  # Добавляем один год
+    end_date -= timedelta(days=1)  # Вычитаем один день
+    
     date_range = f"{start_date.strftime('%d.%m.%Y')} - {end_date.strftime('%d.%m.%Y')}"
 
     return text_for_A, date_range
 
-birth_date_str = input("Введите вашу дату рождения в формате ДД.ММ.ГГГГ: ")
-age = calculate_age(birth_date_str)
-print(f"Ваш возраст: {age} лет")
+@bot.message_handler(commands=['stat'])
+def send_stats(message):
+    if message.chat.id == ADMIN_CHAT_ID:
+        total_users = get_total_users()
+        bot.send_message(message.chat.id, f"Количество уникальных пользователей: {total_users}")
 
-year_of_interest = int(input("Введите год, который вас интересует: "))
-date_str = f"{birth_date_str.split('.')[0]}.{birth_date_str.split('.')[1]}.{year_of_interest}"
-text, date_range = calculate_from_date(date_str)
-print(text)
-print(date_range)
+if __name__ == '__main__':
+    bot.polling(none_stop=True)
