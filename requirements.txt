@@ -1,0 +1,3 @@
+requests
+telebot
+urllib3
