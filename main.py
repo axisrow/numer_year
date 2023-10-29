@@ -1,11 +1,18 @@
 import os
-from dotenv import load_dotenv
 import telebot
 from datetime import datetime, date, timedelta
 from dateutil.relativedelta import relativedelta
 from user_stat import UserStat, db
+from logger import setup_logger
 
-load_dotenv()
+logger = setup_logger()
+
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+    IS_DEV = os.getenv('ENV') == 'DEVELOPMENT'
+except ImportError:
+    IS_DEV = False
 
 BOT_TOKEN = os.getenv('BOT_TOKEN')
 ADMIN_CHAT_ID = 169675602
@@ -125,6 +132,10 @@ def send_stats(message):
     if message.chat.id == ADMIN_CHAT_ID:
         total_users = get_total_users()
         bot.send_message(message.chat.id, f"Количество уникальных пользователей: {total_users}")
+
+if not IS_DEV:
+    from background import keep_alive
+    keep_alive()
 
 if __name__ == '__main__':
     bot.polling(none_stop=True)
