@@ -1,0 +1,62 @@
+2023-10-29 15:55:27,662 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): api.telegram.org:443
+2023-10-29 15:55:28,046 - urllib3.connectionpool - DEBUG - https://api.telegram.org:443 "GET /bot5233483909:AAE0EC4MPIwt4lSycx3uD_EOzMKOuVjdqUQ/getMe HTTP/1.1" 200 199
+2023-10-29 15:55:28,049 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): api.telegram.org:443
+2023-10-29 15:55:28,218 - urllib3.connectionpool - DEBUG - https://api.telegram.org:443 "GET /bot5233483909:AAE0EC4MPIwt4lSycx3uD_EOzMKOuVjdqUQ/getUpdates?offset=1&timeout=20 HTTP/1.1" 200 4466
+2023-10-29 15:55:28,219 - root - INFO - Добавлено в очередь. Текущий размер: 1
+2023-10-29 15:55:28,219 - root - INFO - Добавлено в очередь. Текущий размер: 2
+2023-10-29 15:55:28,219 - root - INFO - Добавлено в очередь. Текущий размер: 3
+2023-10-29 15:55:28,220 - root - INFO - Добавлено в очередь. Текущий размер: 3
+2023-10-29 15:55:28,221 - root - INFO - Добавлено в очередь. Текущий размер: 4
+2023-10-29 15:55:28,221 - root - INFO - Добавлено в очередь. Текущий размер: 5
+2023-10-29 15:55:28,222 - root - INFO - Добавлено в очередь. Текущий размер: 6
+2023-10-29 15:55:28,222 - root - INFO - Добавлено в очередь. Текущий размер: 7
+2023-10-29 15:55:28,222 - root - INFO - Добавлено в очередь. Текущий размер: 8
+2023-10-29 15:55:28,222 - root - INFO - Добавлено в очередь. Текущий размер: 9
+2023-10-29 15:55:28,224 - root - INFO - Добавлено в очередь. Текущий размер: 10
+2023-10-29 15:55:28,224 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): api.telegram.org:443
+2023-10-29 15:55:28,670 - urllib3.connectionpool - DEBUG - https://api.telegram.org:443 "POST /bot5233483909:AAE0EC4MPIwt4lSycx3uD_EOzMKOuVjdqUQ/sendMessage?chat_id=169675602&text=%D0%9F%D1%80%D0%B8%D0%B2%D0%B5%D1%82%21 HTTP/1.1" 200 310
+2023-10-29 15:55:28,671 - root - INFO - Сообщений в очереди: 10
+2023-10-29 15:55:29,813 - urllib3.connectionpool - DEBUG - https://api.telegram.org:443 "POST /bot5233483909:AAE0EC4MPIwt4lSycx3uD_EOzMKOuVjdqUQ/sendMessage?chat_id=169675602&text=%D0%9F%D1%80%D0%B8%D0%B2%D0%B5%D1%82%21 HTTP/1.1" 200 310
+2023-10-29 15:55:29,814 - root - INFO - Сообщений в очереди: 9
+2023-10-29 15:55:31,192 - urllib3.connectionpool - DEBUG - https://api.telegram.org:443 "POST /bot5233483909:AAE0EC4MPIwt4lSycx3uD_EOzMKOuVjdqUQ/sendMessage?chat_id=169675602&text=%D0%9F%D1%80%D0%B8%D0%B2%D0%B5%D1%82%21 HTTP/1.1" 200 310
+2023-10-29 15:55:31,193 - root - INFO - Сообщений в очереди: 8
+2023-10-29 15:55:32,399 - urllib3.connectionpool - DEBUG - https://api.telegram.org:443 "POST /bot5233483909:AAE0EC4MPIwt4lSycx3uD_EOzMKOuVjdqUQ/sendMessage?chat_id=169675602&text=%D0%9F%D1%80%D0%B8%D0%B2%D0%B5%D1%82%21 HTTP/1.1" 200 310
+2023-10-29 15:55:32,400 - root - INFO - Сообщений в очереди: 7
+2023-10-29 15:55:33,509 - urllib3.connectionpool - DEBUG - https://api.telegram.org:443 "POST /bot5233483909:AAE0EC4MPIwt4lSycx3uD_EOzMKOuVjdqUQ/sendMessage?chat_id=169675602&text=%D0%9F%D1%80%D0%B8%D0%B2%D0%B5%D1%82%21 HTTP/1.1" 200 310
+2023-10-29 15:55:33,510 - root - INFO - Сообщений в очереди: 6
+2023-10-29 15:55:34,621 - urllib3.connectionpool - DEBUG - https://api.telegram.org:443 "POST /bot5233483909:AAE0EC4MPIwt4lSycx3uD_EOzMKOuVjdqUQ/sendMessage?chat_id=169675602&text=%D0%9F%D1%80%D0%B8%D0%B2%D0%B5%D1%82%21 HTTP/1.1" 200 310
+2023-10-29 15:55:34,622 - root - INFO - Сообщений в очереди: 5
+2023-10-29 15:55:35,726 - urllib3.connectionpool - DEBUG - https://api.telegram.org:443 "POST /bot5233483909:AAE0EC4MPIwt4lSycx3uD_EOzMKOuVjdqUQ/sendMessage?chat_id=169675602&text=%D0%9F%D1%80%D0%B8%D0%B2%D0%B5%D1%82%21 HTTP/1.1" 200 310
+2023-10-29 15:55:35,727 - root - INFO - Сообщений в очереди: 4
+2023-10-29 15:55:36,831 - urllib3.connectionpool - DEBUG - https://api.telegram.org:443 "POST /bot5233483909:AAE0EC4MPIwt4lSycx3uD_EOzMKOuVjdqUQ/sendMessage?chat_id=169675602&text=%D0%9F%D1%80%D0%B8%D0%B2%D0%B5%D1%82%21 HTTP/1.1" 200 310
+2023-10-29 15:55:36,832 - root - INFO - Сообщений в очереди: 3
+2023-10-29 15:55:38,010 - urllib3.connectionpool - DEBUG - https://api.telegram.org:443 "POST /bot5233483909:AAE0EC4MPIwt4lSycx3uD_EOzMKOuVjdqUQ/sendMessage?chat_id=169675602&text=%D0%9F%D1%80%D0%B8%D0%B2%D0%B5%D1%82%21 HTTP/1.1" 200 310
+2023-10-29 15:55:38,012 - root - INFO - Сообщений в очереди: 2
+2023-10-29 15:55:39,134 - urllib3.connectionpool - DEBUG - https://api.telegram.org:443 "POST /bot5233483909:AAE0EC4MPIwt4lSycx3uD_EOzMKOuVjdqUQ/sendMessage?chat_id=169675602&text=%D0%9F%D1%80%D0%B8%D0%B2%D0%B5%D1%82%21 HTTP/1.1" 200 310
+2023-10-29 15:55:39,135 - root - INFO - Сообщений в очереди: 1
+2023-10-29 15:55:40,248 - urllib3.connectionpool - DEBUG - https://api.telegram.org:443 "POST /bot5233483909:AAE0EC4MPIwt4lSycx3uD_EOzMKOuVjdqUQ/sendMessage?chat_id=169675602&text=%D0%9F%D1%80%D0%B8%D0%B2%D0%B5%D1%82%21 HTTP/1.1" 200 310
+2023-10-29 15:55:40,249 - root - INFO - Сообщений в очереди: 0
+2023-10-29 15:55:48,293 - urllib3.connectionpool - DEBUG - https://api.telegram.org:443 "GET /bot5233483909:AAE0EC4MPIwt4lSycx3uD_EOzMKOuVjdqUQ/getUpdates?offset=738259659&timeout=20 HTTP/1.1" 200 23
+2023-10-29 15:56:08,369 - urllib3.connectionpool - DEBUG - https://api.telegram.org:443 "GET /bot5233483909:AAE0EC4MPIwt4lSycx3uD_EOzMKOuVjdqUQ/getUpdates?offset=738259659&timeout=20 HTTP/1.1" 200 23
+2023-10-29 15:56:28,440 - urllib3.connectionpool - DEBUG - https://api.telegram.org:443 "GET /bot5233483909:AAE0EC4MPIwt4lSycx3uD_EOzMKOuVjdqUQ/getUpdates?offset=738259659&timeout=20 HTTP/1.1" 200 23
+2023-10-29 15:56:48,485 - urllib3.connectionpool - DEBUG - https://api.telegram.org:443 "GET /bot5233483909:AAE0EC4MPIwt4lSycx3uD_EOzMKOuVjdqUQ/getUpdates?offset=738259659&timeout=20 HTTP/1.1" 200 23
+2023-10-29 15:57:08,535 - urllib3.connectionpool - DEBUG - https://api.telegram.org:443 "GET /bot5233483909:AAE0EC4MPIwt4lSycx3uD_EOzMKOuVjdqUQ/getUpdates?offset=738259659&timeout=20 HTTP/1.1" 200 23
+2023-10-29 15:57:28,584 - urllib3.connectionpool - DEBUG - https://api.telegram.org:443 "GET /bot5233483909:AAE0EC4MPIwt4lSycx3uD_EOzMKOuVjdqUQ/getUpdates?offset=738259659&timeout=20 HTTP/1.1" 200 23
+2023-10-29 15:57:48,638 - urllib3.connectionpool - DEBUG - https://api.telegram.org:443 "GET /bot5233483909:AAE0EC4MPIwt4lSycx3uD_EOzMKOuVjdqUQ/getUpdates?offset=738259659&timeout=20 HTTP/1.1" 200 23
+2023-10-29 15:58:08,685 - urllib3.connectionpool - DEBUG - https://api.telegram.org:443 "GET /bot5233483909:AAE0EC4MPIwt4lSycx3uD_EOzMKOuVjdqUQ/getUpdates?offset=738259659&timeout=20 HTTP/1.1" 200 23
+2023-10-29 15:58:28,730 - urllib3.connectionpool - DEBUG - https://api.telegram.org:443 "GET /bot5233483909:AAE0EC4MPIwt4lSycx3uD_EOzMKOuVjdqUQ/getUpdates?offset=738259659&timeout=20 HTTP/1.1" 200 23
+2023-10-29 15:58:48,780 - urllib3.connectionpool - DEBUG - https://api.telegram.org:443 "GET /bot5233483909:AAE0EC4MPIwt4lSycx3uD_EOzMKOuVjdqUQ/getUpdates?offset=738259659&timeout=20 HTTP/1.1" 200 23
+2023-10-29 15:59:08,900 - urllib3.connectionpool - DEBUG - https://api.telegram.org:443 "GET /bot5233483909:AAE0EC4MPIwt4lSycx3uD_EOzMKOuVjdqUQ/getUpdates?offset=738259659&timeout=20 HTTP/1.1" 200 23
+2023-10-29 15:59:28,949 - urllib3.connectionpool - DEBUG - https://api.telegram.org:443 "GET /bot5233483909:AAE0EC4MPIwt4lSycx3uD_EOzMKOuVjdqUQ/getUpdates?offset=738259659&timeout=20 HTTP/1.1" 200 23
+2023-10-29 15:59:48,998 - urllib3.connectionpool - DEBUG - https://api.telegram.org:443 "GET /bot5233483909:AAE0EC4MPIwt4lSycx3uD_EOzMKOuVjdqUQ/getUpdates?offset=738259659&timeout=20 HTTP/1.1" 200 23
+2023-10-29 16:00:09,044 - urllib3.connectionpool - DEBUG - https://api.telegram.org:443 "GET /bot5233483909:AAE0EC4MPIwt4lSycx3uD_EOzMKOuVjdqUQ/getUpdates?offset=738259659&timeout=20 HTTP/1.1" 200 23
+2023-10-29 16:00:29,098 - urllib3.connectionpool - DEBUG - https://api.telegram.org:443 "GET /bot5233483909:AAE0EC4MPIwt4lSycx3uD_EOzMKOuVjdqUQ/getUpdates?offset=738259659&timeout=20 HTTP/1.1" 200 23
+2023-10-29 16:00:49,152 - urllib3.connectionpool - DEBUG - https://api.telegram.org:443 "GET /bot5233483909:AAE0EC4MPIwt4lSycx3uD_EOzMKOuVjdqUQ/getUpdates?offset=738259659&timeout=20 HTTP/1.1" 200 23
+2023-10-29 16:01:09,227 - urllib3.connectionpool - DEBUG - https://api.telegram.org:443 "GET /bot5233483909:AAE0EC4MPIwt4lSycx3uD_EOzMKOuVjdqUQ/getUpdates?offset=738259659&timeout=20 HTTP/1.1" 200 23
+2023-10-29 16:01:29,295 - urllib3.connectionpool - DEBUG - https://api.telegram.org:443 "GET /bot5233483909:AAE0EC4MPIwt4lSycx3uD_EOzMKOuVjdqUQ/getUpdates?offset=738259659&timeout=20 HTTP/1.1" 200 23
+2023-10-29 16:01:49,347 - urllib3.connectionpool - DEBUG - https://api.telegram.org:443 "GET /bot5233483909:AAE0EC4MPIwt4lSycx3uD_EOzMKOuVjdqUQ/getUpdates?offset=738259659&timeout=20 HTTP/1.1" 200 23
+2023-10-29 16:02:09,402 - urllib3.connectionpool - DEBUG - https://api.telegram.org:443 "GET /bot5233483909:AAE0EC4MPIwt4lSycx3uD_EOzMKOuVjdqUQ/getUpdates?offset=738259659&timeout=20 HTTP/1.1" 200 23
+2023-10-29 16:02:29,508 - urllib3.connectionpool - DEBUG - https://api.telegram.org:443 "GET /bot5233483909:AAE0EC4MPIwt4lSycx3uD_EOzMKOuVjdqUQ/getUpdates?offset=738259659&timeout=20 HTTP/1.1" 200 23
+2023-10-29 16:02:49,559 - urllib3.connectionpool - DEBUG - https://api.telegram.org:443 "GET /bot5233483909:AAE0EC4MPIwt4lSycx3uD_EOzMKOuVjdqUQ/getUpdates?offset=738259659&timeout=20 HTTP/1.1" 200 23
+2023-10-29 16:03:09,649 - urllib3.connectionpool - DEBUG - https://api.telegram.org:443 "GET /bot5233483909:AAE0EC4MPIwt4lSycx3uD_EOzMKOuVjdqUQ/getUpdates?offset=738259659&timeout=20 HTTP/1.1" 200 23
+2023-10-29 16:03:29,780 - urllib3.connectionpool - DEBUG - https://api.telegram.org:443 "GET /bot5233483909:AAE0EC4MPIwt4lSycx3uD_EOzMKOuVjdqUQ/getUpdates?offset=738259659&timeout=20 HTTP/1.1" 200 23
