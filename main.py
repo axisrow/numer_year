@@ -131,7 +131,15 @@ def calculate_from_date(date_str):
 def send_stats(message):
     if message.chat.id == ADMIN_CHAT_ID:
         total_users = get_total_users()
-        bot.send_message(message.chat.id, f"Количество уникальных пользователей: {total_users}")
+        users = UserStat.select()
+
+        user_info = ["Уникальных пользователей:"]
+        for user in users:
+            user_info.append(f"{user.user_id}, @{user.username}")
+
+        user_info.append(f"Всего: {total_users}")
+        bot.send_message(message.chat.id, '\n'.join(user_info))
+
 
 if not IS_DEV:
     from background import keep_alive
