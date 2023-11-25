@@ -1,22 +1,35 @@
 import os
 import telebot
-from datetime import datetime, date, timedelta
-from dateutil.relativedelta import relativedelta
+from telebot import types
+from datetime import date
+from calculate import *
 from user_stat import UserStat, db
-from logger import setup_logger
+# from logger import setup_logger
 
-logger = setup_logger()
+# logger = setup_logger()
 
-try:
-    from dotenv import load_dotenv
-    load_dotenv()
-    IS_DEV = os.getenv('ENV') == 'DEVELOPMENT'
-except ImportError:
-    IS_DEV = False
+from dotenv import load_dotenv
+load_dotenv()
 
 BOT_TOKEN = os.getenv('BOT_TOKEN')
 ADMIN_CHAT_ID = 169675602
 bot = telebot.TeleBot(BOT_TOKEN)
+
+# Функция для создания кнопок
+def generate_markup_years(year=None):
+    markup = types.InlineKeyboardMarkup()
+    if year is None:
+        # Кнопки по умолчанию
+        years = [2022, 2023, 2024]
+    else:
+        # Генерация кнопок на основе выбранного года
+        year = int(year)
+        years = [year - 1, year + 1]
+    
+    for y in years:
+        markup.add(types.InlineKeyboardButton(text=str(y), callback_data=str(y)))
+
+    return markup
 
 def register_user(user_id, username, first_name, last_name, language_code, birth_date):
     user, created = UserStat.get_or_create(
@@ -26,11 +39,13 @@ def register_user(user_id, username, first_name, last_name, language_code, birth
             'first_name': first_name,
             'last_name': last_name,
             'language_code': language_code,
-            'date_of_birth': birth_date
+            'date_of_birth': birth_date,
+            'message_count': 1  # устанавливаем счетчик сообщений на 1 при регистрации нового пользователя
         })
-    
+
     if not created:
         user.date_of_birth = birth_date
+        user.message_count += 1  # увеличиваем счетчик сообщений на 1 при каждом новом сообщении
         user.save()
 
 def get_user(user_id):
@@ -43,89 +58,80 @@ def get_user(user_id):
 def get_total_users():
     return UserStat.select().count()
 
+@bot.callback_query_handler(func=lambda call: True)
+def button_click(call):
+    # Получаем текст кнопки
+    button_text = call.data
+    # Получаем ID пользователя, который нажал на кнопку
+    user_id = call.from_user.id
+    # Изменяем текст в существующем сообщении
+    call.message.text = button_text
+    # Вызываем обработчик года с модифицированным сообщением
+    year_handler(call.message)
+
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
     user = get_user(message.chat.id)
     if user:
-        bot.send_message(message.chat.id, f"Здравствуйте, {user.first_name} {user.last_name}, Вы родились: {user.date_of_birth}\nВведите год, который Вас интересует:")
+        try:
+            year = int(message.text)  # Пытаемся интерпретировать текст сообщения как год
+        except ValueError:
+            year = None  # Если текст не является числом, используем значения по умолчанию
+            markup_years = generate_markup_years(year)
+            bot.send_message(message.chat.id, f"Здравствуйте, {user.first_name} {user.last_name}, Вы родились: {user.date_of_birth}\nВыберите год, который Вас интересует:", reply_markup=markup_years)
+            bot.send_message(message.chat.id, "Или введите любой год:")
     else:
         bot.send_message(message.chat.id, "Введите вашу дату рождения в формате ДД.ММ.ГГГГ:")
 
-@bot.message_handler(func=lambda message: True)
+@bot.message_handler(func=lambda message: not message.text.isdigit())
 def birth_date_handler(message):
     chat_id = message.chat.id
     text = message.text
     
-    # Добавим здесь проверку на админский ID
-    if text == '/stat' and chat_id == ADMIN_CHAT_ID:
-        return send_stats(message)
+    # Теперь этот обработчик сфокусирован только на обработке даты рождения
+    # Проверяем, является ли текст датой
+    date_parts = text.split('.')
+    if len(date_parts) != 3 or not all(part.isdigit() for part in date_parts):
+        bot.send_message(chat_id, "Некорректный формат даты. Пожалуйста, введите дату в формате ДД.ММ.ГГГГ.")
+        return
     
-    user = get_user(chat_id)
-    
-    if not user:
-        # Обработка даты рождения
-        date_parts = text.split('.')
-        if len(date_parts) != 3 or not all(part.isdigit() for part in date_parts):
-            bot.send_message(chat_id, "Некорректный формат даты. Пожалуйста, введите дату в формате ДД.ММ.ГГГГ.")
+    try:
+        birth_date = date(int(date_parts[2]), int(date_parts[1]), int(date_parts[0]))
+        register_user(
+            user_id=chat_id,
+            username=message.from_user.username,
+            first_name=message.from_user.first_name,
+            last_name=message.from_user.last_name,
+            language_code=message.from_user.language_code,
+            birth_date=birth_date
+        )
+        bot.send_message(chat_id, "Дата рождения успешно сохранена. Введите интересующий Вас год.")
+    except ValueError:
+        bot.send_message(chat_id, "Некорректный формат даты. Пожалуйста, введите дату в формате ДД.ММ.ГГГГ.")
+
+@bot.message_handler(func=lambda message: message.text.isdigit())
+def year_handler(message):
+    chat_id = message.chat.id
+    text = message.text
+
+    # Обработка интересующего года
+    if 1900 <= int(text) <= 2100:
+        user = get_user(chat_id)
+        user.message_count += 1  # увеличиваем счетчик сообщений на 1 при каждом новом сообщении
+        user.save()
+        if not user:
+            bot.send_message(chat_id, "Сначала введите вашу дату рождения.")
             return
-        try:
-            birth_date = date(int(date_parts[2]), int(date_parts[1]), int(date_parts[0]))
-            register_user(
-                user_id=chat_id,
-                username=message.from_user.username,
-                first_name=message.from_user.first_name,
-                last_name=message.from_user.last_name,
-                language_code=message.from_user.language_code,
-                birth_date=birth_date
-            )
-            bot.send_message(chat_id, "Дата рождения успешно сохранена. Введите интересующий Вас год.")
-        except ValueError:
-            bot.send_message(chat_id, "Некорректный формат даты. Пожалуйста, введите дату в формате ДД.ММ.ГГГГ.")
+
+        year_of_interest = int(text)
+        birth_date_str = user.date_of_birth.strftime('%d.%m.%Y')
+        text_for_A, date_range = calculate_from_date(f"{birth_date_str.split('.')[0]}.{birth_date_str.split('.')[1]}.{year_of_interest}")
+        # Генерация клавиатуры с кнопками для годов
+        markup_years = generate_markup_years(year_of_interest)
+        bot.send_message(chat_id, f"{text_for_A}\nДиапазон дат: {date_range}", reply_markup=markup_years)
+        bot.send_message(message.chat.id, "Или введите любой год:")
     else:
-        # Обработка интересующего года
-        if text.isdigit() and 1900 <= int(text) <= 2100:
-            year_of_interest = int(text)
-            birth_date_str = user.date_of_birth.strftime('%d.%m.%Y')
-            text_for_A, date_range = calculate_from_date(f"{birth_date_str.split('.')[0]}.{birth_date_str.split('.')[1]}.{year_of_interest}")
-            bot.send_message(chat_id, f"{text_for_A}\nДиапазон дат: {date_range}")
-        else:
-            bot.send_message(chat_id, "Некорректный ввод. Введите интересующий Вас год (от 1900 до 2100).")
-
-def calculate_from_date(date_str):
-    day, month, year = map(int, date_str.split('.'))
-    
-    D1, D2 = divmod(day, 10)
-    M1, M2 = divmod(month, 10)
-    Y1, Y2 = divmod(year // 100, 10)
-    Y3, Y4 = divmod(year % 100, 10)
-
-    R = D1 + D2 + M1 + M2 + Y1 + Y2 + Y3 + Y4
-    R1, R2 = divmod(R, 10)
-    A = R1 + R2
-    if A > 9:
-        A1, A2 = divmod(A, 10)
-        A = A1 + A2
-
-    texts = [
-        "1-ый ЛИЧНЫЙ ГОД\nНАЧИНАНИЕ\nГод новых идей. Необходимо продумать план на 9 лет. Положиться на себя, быть независимым. Прокладывать новые пути",
-        "2-ой ЛИЧНЫЙ ГОД\nТЕРПЕНИЕ\nБлагоприятна совместная работа в команде, обучение, накопление знаний. Необходимо проявлять дипломатию, тактичность, думать, сохранять душевный покой. Удача в любви",
-        "3-ий ЛИЧНЫЙ ГОД\nРАДОСТЬ\nЛичный год для радости. Необходимо больше самовыражаться в творчестве, верить в себя, позволить себе отдохнуть",
-        "4-ый ЛИЧНЫЙ ГОД\nПРАКТИЧНОСТЬ\nБыть организованным и производительным, строить прочный фундамент, избегать лени, опираться на самодисциплину. Всё делать охотно, тогда придёт энергия. Усилия приведут к успеху",
-        "5-ый ЛИЧНЫЙ ГОД\nИЗМЕНЕНИЕ\nГод перемен, свободы. Надо сделать решительный шаг вперёд. Нарушить заведённый распорядок. Измениться, создавать перемены – в себе, в своём доме, в образе жизни, но не во вред другим. Не терять бдительности и собранности.",
-        "6-ой ЛИЧНЫЙ ГОД\nОТВЕТСТВЕННОСТЬ\nСделать дом центром своей жизни. Быть честным и справедливым к другим и себе. Принимать свои обязанности с готовностью и желанием. Это лучший год для брака, для улучшения жилищных условий. Всем помогать, давать советы.",
-        "7-ой ЛИЧНЫЙ ГОД\nВЕРА\nГод духовного роста. Уделить время размышлениям, самоанализу, учёбе, профессиональному росту. Анализировать свои мысли, поступки – что бы Вы хотели изменить в себе? Продумать своё отношение к жизни. Проявлять интерес к науке, эзотерике.  Необходимо научиться работать со своими ошибками",
-        "8-ой ЛИЧНЫЙ ГОД\nУСПЕХ\nВремя «сбора урожая». Успех в бизнесе. Идти за тем, чего желаете. Быть деловитым, организованным, уверенным в себе. Можно надеяться на неожиданные деньги. Благоприятны деловые поездки.",
-        "9-ый ЛИЧНЫЙ ГОД\nЗАВЕРШЕНИЕ, РАЗРУШЕНИЕ\nОтпустить ненужные идеи, отношения, вещи. Не начинать ничего нового. Уступать. Быть великодушным и сострадательным. Можно с успехом путешествовать."
-    ]
-    text_for_A = texts[A - 1]
-    start_date = datetime.strptime(date_str, '%d.%m.%Y')
-
-    end_date = start_date + relativedelta(years=+1)  # Добавляем один год
-    end_date -= timedelta(days=1)  # Вычитаем один день
-    
-    date_range = f"{start_date.strftime('%d.%m.%Y')} - {end_date.strftime('%d.%m.%Y')}"
-
-    return text_for_A, date_range
+        bot.send_message(chat_id, "Некорректный ввод. Введите интересующий Вас год (от 1900 до 2100).")
 
 @bot.message_handler(commands=['stat'])
 def send_stats(message):
@@ -140,10 +146,5 @@ def send_stats(message):
         user_info.append(f"Всего: {total_users}")
         bot.send_message(message.chat.id, '\n'.join(user_info))
 
-
-if not IS_DEV:
-    from background import keep_alive
-    keep_alive()
-
-if __name__ == '__main__':
-    bot.polling(none_stop=True)
+print("Бот запущен")
+bot.polling(non_stop=True, interval=0)

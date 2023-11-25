@@ -1,3 +1,4 @@
+#user_stat.py - только создает пустую базу данных
 from peewee import Model, SqliteDatabase, CharField, IntegerField, DateField
 
 db = SqliteDatabase('statistics.db')
@@ -9,6 +10,7 @@ class UserStat(Model):
     last_name = CharField(null=True)
     language_code = CharField(null=True)
     date_of_birth = DateField(null=True)
+    message_count = IntegerField(default=0)  # новое поле для подсчета сообщений
 
     class Meta:
         database = db
